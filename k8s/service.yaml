@@ -1,0 +1,14 @@
+# k8s/service.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: heart-disease-predictor-service
+spec:
+  selector:
+    app: heart-api
+  ports:
+    - protocol: TCP
+      port: 80 # External port
+      targetPort: 8000 # Container port
+  type: LoadBalancer # Expose externally via a cloud Load Balancer

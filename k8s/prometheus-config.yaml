@@ -1,0 +1,29 @@
+# k8s/prometheus-config.yaml
+# Placeholder for Prometheus Monitoring Integration
+
+# 1. Code Integration (Mandatory):
+#    - You must add a simple Prometheus metrics endpoint (e.g., /metrics)
+#      to your api/main.py (e.g., using 'fastapi-prometheus' or similar).
+#    - The /predict endpoint already includes structured logging to stdout (Step 8).
+
+# 2. Kubernetes Integration (Example ServiceMonitor):
+# This manifest requires the Prometheus Operator to be installed in your cluster.
+
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: heart-api-monitor
+  labels:
+    app: heart-api
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: heart-api # Selects the service based on this label
+  endpoints:
+  - port: http # Assumes your Service uses port name 'http'
+    path: /metrics # The path where your FastAPI exposes Prometheus metrics
+    interval: 15s
+  namespaceSelector:
+    matchNames:
+    - default # The namespace where your API is deployed

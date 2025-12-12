@@ -1,0 +1,19 @@
+# requirements.txt
+# Core ML/Data dependencies
+pandas
+scikit-learn
+numpy
+
+# Experiment Tracking (Step 3)
+mlflow
+
+# API Framework (Step 6)
+fastapi
+uvicorn
+pydantic
+
+# Testing (Step 5)
+pytest
+
+# Utility
+requests

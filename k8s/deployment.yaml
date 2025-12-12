@@ -1,0 +1,44 @@
+# k8s/deployment.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: heart-disease-predictor-deployment
+  labels:
+    app: heart-api
+spec:
+  replicas: 2 # Scalability: Run 2 instances for high availability
+  selector:
+    matchLabels:
+      app: heart-api
+  template:
+    metadata:
+      labels:
+        app: heart-api
+    spec:
+      containers:
+      - name: heart-api-container
+        # Replace this with your actual pushed Docker image path (e.g., <your_docker_user>/heart-disease-api:latest)
+        image: <your-docker-registry>/heart-disease-api:latest
+        ports:
+        - containerPort: 8000
+        resources:
+          limits: # Set resource limits for stability
+            memory: "512Mi"
+            cpu: "500m"
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+        # Liveness and Readiness probes are highly recommended for production
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
