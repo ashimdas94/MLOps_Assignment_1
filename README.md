@@ -1,0 +1,121 @@
+# MLOps Assignment - Full Code & Folder Structure
+
+This repository contains an end-to-end MLOps solution for predicting the risk of heart disease based on the UCI Heart Disease dataset.
+The project is designed to be a scalable, reproducible machine learning solution utilizing modern MLOps best practices.
+
+## 🎯 Project Objective
+
+To design, develop, and deploy a scalable, reproducible, and monitored machine learning classifier to predict the presence (1) or absence (0) 
+of heart disease based on patient health data, served via a low-latency REST API.
+
+
+| Aspect | Tool/Technology | Assignment Task |
+| :--- | :--- | :--- |
+| **Data & Core ML** | Pandas, Scikit-learn, NumPy | 1, 2, 4 |
+| **Experiment Tracking** | MLflow | 3 |
+| **API Framework** | FastAPI, Uvicorn | 5, 6, 8 |
+| **CI/CD Automation** | GitHub Actions, Pytest | 5 |
+| **Containerization** | Docker | 6 |
+| **Orchestration/Deployment**| Kubernetes (K8s) | 7 |
+| **Configuration** | `src/config.py` | 4 (Reproducibility) |
+
+## 🏗️ Architecture Overview
+
+The system architecture decouples the model training pipeline from the high-availability serving API. All stages are automated through configuration and CI/CD.
+
+## 📁 Project Structure
+
+```
+mlops-heart-disease/
+│
+├── data/
+│   ├── raw/                    # Original UCI file 
+│   │   └── heart.csv
+│   ├── processed/              
+│   │   └── heart_clean.csv
+│   └── download_dataset.py     # Downloads directly from official UCI URL
+│
+├── notebooks/
+│   └── eda.ipynb               # Professional EDA: histograms, correlation heatmap, class balance
+│
+├── src/
+│   ├── preprocess.py           # Data cleaning, imputation, StandardScaler pipeline
+│   ├── train.py                # Full training + MLflow logging
+│   ├── inference.py            # Single & batch prediction functions
+│   ├── config.py               # Paths, hyperparameters, seeds
+│   ├── utils.py                # Helper functions (logging, metrics)
+│   └── model/
+│       └── final_model.pkl     # Best model (RandomForest + scaler in Pipeline)
+│
+├── api/
+│   ├── main.py                 # FastAPI app with /predict, /health, /metrics
+│   ├── schema.py               # Pydantic Input schema (13 features)
+│   └── Dockerfile              # Production-ready Docker image (multi-stage)
+│
+├── tests/
+│   ├── test_preprocess.py      # Tests data loading, missing values, shape
+│   ├── test_train.py           # Tests model performance > 0.85 ROC-AUC
+│   └── sample_input.json       # Example request for API testing
+│
+├── .github/
+│   └── ci_pipeline.yml         # Lint → Test → Train → Upload model artifact
+│
+├── k8s/
+│   ├── deployment.yaml         # 3 replicas, rolling update strategy
+│   ├── service.yaml            # LoadBalancer service
+│   └── prometheus-config.yaml  # Scrape config for /metrics endpoint
+│
+├── requirements.txt            # All dependencies (pinned versions)
+├── REPORT.docx                 # 10-page final report with all screenshots
+└── README.md                   # This file
+```
+
+## ⚙️ Setup and Local Execution
+
+### Prerequisites
+
+1.  Python 3.10+
+2.  `pip`
+3.  Docker
+4.  `kubectl`
+
+### Installation
+
+1. Clone the repository and install dependencies:
+
+    ```bash
+    git clone https://github.com/ashimdas94/MLOps_Assignment_1.git
+    cd mlops-heart-disease
+    pip install -r requirements.txt
+    ```
+
+2. Download dataset:
+   ```bash
+   python python -m data.download_dataset
+   ```
+3. EDA:
+    ```bash
+   jupyter notebook notebooks/eda.ipynb
+   ```
+4. Train model:
+   ```bash
+   python -m src.train
+   ```
+5. Testing:
+   ```bash
+   python -m pytest tests/
+   ```
+6. Run API locally:
+   ```bash
+   uvicorn src.api.main:app --reload --port 8000
+   ```
+7. Build Docker image:
+   ```bash
+   docker build -f api/Dockerfile -t heart-api:latest .
+   ```
+8. Run via Docker:
+   ```bash
+   docker run -p 8000:8000 heart-api:latest
+   ```
+
+
