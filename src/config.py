@@ -1,6 +1,5 @@
 # src/config.py
 
-import os
 from pathlib import Path
 
 # --- General Configuration ---
@@ -11,7 +10,8 @@ DATA_RAW_DIR = PROJECT_DIR / 'data' / 'raw'
 DATA_PROCESSED_DIR = PROJECT_DIR / 'data' / 'processed'
 DATA_FILENAME = 'heart.csv'
 # UPDATED URL: Using the raw processed.cleveland.data file from the official UCI repository.
-DATA_DOWNLOAD_URL = "https://archive.ics.uci.edu/ml/machine-learning-databases/heart-disease/processed.cleveland.data"
+DATA_DOWNLOAD_URL = ("https://archive.ics.uci.edu/ml/machine-learning-databases/heart-disease"
+                     "/processed.cleveland.data")
 
 RAW_DATA_PATH = DATA_RAW_DIR / DATA_FILENAME
 PROCESSED_DATA_PATH = DATA_PROCESSED_DIR / DATA_FILENAME

@@ -3,7 +3,7 @@
 import pytest
 import pandas as pd
 from src.preprocess import preprocess_and_split
-from src.config import RAW_DATA_PATH, TARGET_COLUMN, NUMERICAL_FEATURES, CATEGORICAL_FEATURES
+from src.config import RAW_DATA_PATH, TARGET_COLUMN
 
 
 @pytest.fixture(scope="session")

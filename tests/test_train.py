@@ -1,14 +1,12 @@
 # tests/test_train.py
 
 import pytest
-import joblib
 import json
 import pandas as pd
 from src.config import MODEL_PATH, RAW_DATA_PATH
 from src.inference import load_model_pipeline, predict_heart_disease
 from src.utils import get_metrics
 from src.preprocess import preprocess_and_split
-from sklearn.metrics import accuracy_score
 
 
 # --- Fixtures ---
@@ -52,7 +50,8 @@ def test_model_performance(trained_pipeline, test_data):
     # Check Minimum Performance Requirement (Assignment Step 3)
     MIN_AUC_THRESHOLD = 0.70
     assert metrics['roc_auc'] >= MIN_AUC_THRESHOLD, (
-        f"Model failed minimum AUC threshold check. Got {metrics['roc_auc']:.2f}, required {MIN_AUC_THRESHOLD:.2f}"
+        f"Model failed minimum AUC threshold check. "
+        f"Got {metrics['roc_auc']:.2f}, required {MIN_AUC_THRESHOLD:.2f}"
     )
     print(f"\nModel AUC: {metrics['roc_auc']:.2f} (Passed threshold check)")
 
@@ -73,7 +72,8 @@ def test_inference_with_sample_inputs(sample_inputs):
 
         # Check if the predicted class matches the expected class
         assert result['prediction'] == sample['expected_class'], (
-            f"Inference failed for {sample['name']}. Expected {sample['expected_class']}, got {result['prediction']}"
+            f"Inference failed for {sample['name']}. "
+            f"Expected {sample['expected_class']}, got {result['prediction']}"
         )
         # Check if the probability is reasonable (between 0.0 and 1.0)
         assert 0.0 <= result['probability'] <= 1.0

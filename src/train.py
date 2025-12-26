@@ -4,7 +4,6 @@ import pandas as pd
 import mlflow
 import mlflow.sklearn
 import joblib
-from pathlib import Path
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.pipeline import Pipeline
@@ -22,13 +21,14 @@ MODEL_CLASS_MAP = {
 }
 
 
-def train_and_log_model(model_name: str, model_config: dict, preprocessor, X_train, X_test, y_train, y_test):
+def train_and_log_model(model_name: str, model_config: dict, preprocessor,
+                        X_train, X_test, y_train, y_test):
     """Trains a model, tracks parameters/metrics with MLflow, and returns the trained pipeline."""
 
     model_class = MODEL_CLASS_MAP.get(model_config['model'])
     model = model_class(**model_config['params'])
 
-    with mlflow.start_run(run_name=model_name) as run:
+    with mlflow.start_run(run_name=model_name):
         print(f"\n--- Starting MLflow Run for {model_name} ---")
 
         # 1. Create the full ML pipeline
@@ -80,7 +80,8 @@ def run_training_pipeline():
     all_metrics = {}
 
     for name, config in MODEL_CONFIGS.items():
-        pipeline, metrics = train_and_log_model(name, config, preprocessor, X_train, X_test, y_train, y_test)
+        pipeline, metrics = train_and_log_model(name, config, preprocessor,
+                                                X_train, X_test, y_train, y_test)
         all_pipelines[name] = pipeline
         all_metrics[name] = metrics
 
