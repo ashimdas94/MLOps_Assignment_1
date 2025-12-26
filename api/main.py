@@ -1,6 +1,7 @@
 # api/main.py
 
 from fastapi import FastAPI, HTTPException
+from prometheus_fastapi_instrumentator import Instrumentator
 import json
 import os
 import sys
@@ -16,6 +17,9 @@ from api.schema import HeartDiseaseFeatures, PredictionResponse
 
 # Initialize FastAPI
 app = FastAPI(title="Heart Disease Prediction API", version="1.0")
+
+# Prometheus metrics instrumentation
+Instrumentator().instrument(app).expose(app)
 
 # Load model pipeline on startup
 try:

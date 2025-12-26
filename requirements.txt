@@ -15,5 +15,11 @@ pydantic
 # Testing (Step 5)
 pytest
 
+# Linting
+flake8
+
 # Utility
 requests
+
+#monitoring
+prometheus-fastapi-instrumentator

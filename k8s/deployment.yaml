@@ -18,8 +18,9 @@ spec:
     spec:
       containers:
       - name: heart-api-container
-        # Replace this with your actual pushed Docker image path (e.g., <your_docker_user>/heart-disease-api:latest)
-        image: <your-docker-registry>/heart-disease-api:latest
+        # Replace this with your actual pushed Docker image path (e.g., <your_docker_user>/heart-api:latest)
+        image: heart-api:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8000
         resources:
