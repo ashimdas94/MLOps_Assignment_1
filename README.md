@@ -72,16 +72,16 @@ mlops-heart-disease/
 
 ## ⚙️ Setup and Local Execution
 
-### Prerequisites
+## Prerequisites
 
 1.  Python 3.10+
 2.  `pip`
 3.  Docker
 4.  `kubectl`
 
-### Installation
+## Installation
 
-1. Clone the repository and install dependencies:
+### 1️⃣ Clone the repository and install dependencies:
 
     ```bash
     git clone https://github.com/ashimdas94/MLOps_Assignment_1.git
@@ -89,33 +89,172 @@ mlops-heart-disease/
     pip install -r requirements.txt
     ```
 
-2. Download dataset:
+### 2️⃣ Download dataset
    ```bash
    python python -m data.download_dataset
    ```
-3. EDA:
-    ```bash
+### 3️⃣ EDA:
+   ```bash
    jupyter notebook notebooks/eda.ipynb
    ```
-4. Train model:
+### 4️⃣ Train model:
    ```bash
    python -m src.train
    ```
-5. Testing:
+### 5️⃣ Testing:
    ```bash
    python -m pytest tests/
    ```
-6. Run API locally:
+
+### 6️⃣ Run API locally:
    ```bash
    uvicorn src.api.main:app --reload --port 8000
    ```
-7. Build Docker image:
+### 7️⃣ Build Docker image:
    ```bash
    docker build -f api/Dockerfile -t heart-api:latest .
    ```
-8. Run via Docker:
+### 8️⃣ Run via Docker:
    ```bash
    docker run -p 8000:8000 heart-api:latest
    ```
+
+
+## 🚀 Deployment Using Kubernetes (Minikube)
+
+This project supports local Kubernetes deployment using **Minikube**, simulating a production-like environment with container orchestration, scaling, and monitoring.
+
+### Prerequisites (Additional)
+
+Ensure the following are installed:
+
+* **Minikube**
+* **Helm**
+* **Docker**
+* **kubectl**
+
+Verify installation:
+
+```bash
+minikube version
+kubectl version --client
+helm version
+```
+
+### 1️⃣ Start Minikube
+
+```bash
+minikube start --driver=docker
+```
+
+Configure your shell to use Minikube’s Docker daemon:
+
+```bash
+eval $(minikube docker-env)
+```
+
+### 2️⃣ Build Docker Image Inside Minikube
+
+```bash
+docker build -f api/Dockerfile -t heart-api:latest .
+```
+
+### 3️⃣ Deploy Application to Kubernetes
+
+```bash
+kubectl apply -f k8s/deployment.yaml
+kubectl apply -f k8s/service.yaml
+```
+
+Verify:
+
+```bash
+kubectl get pods
+kubectl get svc
+```
+
+### 4️⃣ Access the API
+
+**Stable local access (recommended):**
+
+```bash
+kubectl port-forward svc/heart-disease-predictor-service 8000:80
+```
+
+API available at:
+
+```
+http://localhost:8000
+```
+
+---
+
+## 📊 Monitoring with Prometheus & Grafana
+
+The API exposes Prometheus-compatible metrics at `/metrics` and is monitored using **Prometheus Operator + Grafana**.
+
+### 1️⃣ Install Prometheus Operator
+
+```bash
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+kubectl create namespace monitoring
+helm install prometheus prometheus-community/kube-prometheus-stack -n monitoring
+```
+
+### 2️⃣ Enable Metrics Scraping
+
+```bash
+kubectl apply -f k8s/prometheus-config.yaml
+```
+
+Verify targets:
+
+```bash
+kubectl port-forward -n monitoring svc/prometheus-kube-prometheus-prometheus 9090
+```
+
+Open `http://localhost:9090` → **Status → Targets**.
+
+### 3️⃣ Access Grafana
+
+```bash
+kubectl port-forward -n monitoring svc/prometheus-grafana 3000:80
+```
+
+Login:
+
+```
+admin / prom-operator
+```
+
+### 4️⃣ Useful PromQL Queries
+
+**Prediction request rate:**
+
+```promql
+sum(rate(http_request_duration_seconds_count{handler="/predict"}[1m]))
+```
+
+**p95 latency:**
+
+```promql
+histogram_quantile(
+  0.95,
+  sum by (le) (
+    rate(http_request_duration_seconds_bucket{handler="/predict"}[5m])
+  )
+)
+```
+
+---
+
+## ✅ Summary
+
+* Containerized ML inference service
+* Kubernetes-based deployment
+* CI/CD-driven training and testing
+* MLflow experiment tracking
+* Production-grade monitoring with Prometheus & Grafana
 
 
