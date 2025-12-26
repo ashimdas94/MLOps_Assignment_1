@@ -91,7 +91,7 @@ mlops-heart-disease/
 
 ### 2️⃣ Download dataset
    ```bash
-   python python -m data.download_dataset
+   python -m data.download_dataset
    ```
 ### 3️⃣ EDA:
    ```bash

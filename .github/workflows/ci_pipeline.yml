@@ -40,13 +40,13 @@ jobs:
 
       # 5. Data Acquisition (Step 1)
       - name: Download Data
-        run: python data/download_dataset.py
+        run: python -m data/download_dataset.py
 
       # 6. Model Training (Step 3) - Generates src/model/final_model.pkl
       - name: Train Model and Log with MLflow (Mock)
         # We don't need a real MLflow server for CI, just let the script run
         run: |
-          python src/train.py | tee training.log
+          python -m src/train.py | tee training.log
 
       # 7. Automated Testing (Step 6) - Runs the tests defined above
       - name: Run Pytest
