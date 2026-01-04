@@ -100,7 +100,12 @@ mlops-heart-disease/
 ```
 ### 5️⃣ Testing:
 ```bash
-   python -m pytest tests/
+   pytest tests \
+  --cov=src \
+  --cov-report=term \
+  --cov-report=xml \
+  --cov-report=html \
+  -v
 ```
 
 ### 6️⃣ Run API locally:
