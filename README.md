@@ -31,8 +31,6 @@ mlops-heart-disease/
 ├── data/
 │   ├── raw/                    # Original UCI file 
 │   │   └── heart.csv
-│   ├── processed/              
-│   │   └── heart_clean.csv
 │   └── download_dataset.py     # Downloads directly from official UCI URL
 │
 ├── notebooks/
@@ -75,49 +73,48 @@ mlops-heart-disease/
 ## Prerequisites
 
 1.  Python 3.10+
-2.  `pip`
+2.  pip
 3.  Docker
-4.  `kubectl`
+4.  kubectl
 
 ## Installation
 
 ### 1️⃣ Clone the repository and install dependencies:
-
-    ```bash
+```bash
     git clone https://github.com/ashimdas94/MLOps_Assignment_1.git
     cd mlops-heart-disease
     pip install -r requirements.txt
-    ```
+```
 
 ### 2️⃣ Download dataset
-   ```bash
+```bash
    python -m data.download_dataset
-   ```
+```
 ### 3️⃣ EDA:
-   ```bash
+```bash
    jupyter notebook notebooks/eda.ipynb
-   ```
+```
 ### 4️⃣ Train model:
-   ```bash
+```bash
    python -m src.train
-   ```
+```
 ### 5️⃣ Testing:
-   ```bash
+```bash
    python -m pytest tests/
-   ```
+```
 
 ### 6️⃣ Run API locally:
-   ```bash
+```bash
    uvicorn src.api.main:app --reload --port 8000
-   ```
+```
 ### 7️⃣ Build Docker image:
-   ```bash
+```bash
    docker build -f api/Dockerfile -t heart-api:latest .
-   ```
+```
 ### 8️⃣ Run via Docker:
-   ```bash
+```bash
    docker run -p 8000:8000 heart-api:latest
-   ```
+```
 
 
 ## 🚀 Deployment Using Kubernetes (Minikube)
@@ -136,41 +133,41 @@ Ensure the following are installed:
 Verify installation:
 
 ```bash
-minikube version
-kubectl version --client
-helm version
+    minikube version
+    kubectl version --client
+    helm version
 ```
 
 ### 1️⃣ Start Minikube
 
 ```bash
-minikube start --driver=docker
+    minikube start --driver=docker
 ```
 
 Configure your shell to use Minikube’s Docker daemon:
 
 ```bash
-eval $(minikube docker-env)
+    eval $(minikube docker-env)
 ```
 
 ### 2️⃣ Build Docker Image Inside Minikube
 
 ```bash
-docker build -f api/Dockerfile -t heart-api:latest .
+    docker build -f api/Dockerfile -t heart-api:latest .
 ```
 
 ### 3️⃣ Deploy Application to Kubernetes
 
 ```bash
-kubectl apply -f k8s/deployment.yaml
-kubectl apply -f k8s/service.yaml
+    kubectl apply -f k8s/deployment.yaml
+    kubectl apply -f k8s/service.yaml
 ```
 
 Verify:
 
 ```bash
-kubectl get pods
-kubectl get svc
+    kubectl get pods
+    kubectl get svc
 ```
 
 ### 4️⃣ Access the API
@@ -178,7 +175,7 @@ kubectl get svc
 **Stable local access (recommended):**
 
 ```bash
-kubectl port-forward svc/heart-disease-predictor-service 8000:80
+    kubectl port-forward svc/heart-disease-predictor-service 8000:80
 ```
 
 API available at:
@@ -196,22 +193,22 @@ The API exposes Prometheus-compatible metrics at `/metrics` and is monitored usi
 ### 1️⃣ Install Prometheus Operator
 
 ```bash
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm repo update
-kubectl create namespace monitoring
-helm install prometheus prometheus-community/kube-prometheus-stack -n monitoring
+    helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+    helm repo update
+    kubectl create namespace monitoring
+    helm install prometheus prometheus-community/kube-prometheus-stack -n monitoring
 ```
 
 ### 2️⃣ Enable Metrics Scraping
 
 ```bash
-kubectl apply -f k8s/prometheus-config.yaml
+    kubectl apply -f k8s/prometheus-config.yaml
 ```
 
 Verify targets:
 
 ```bash
-kubectl port-forward -n monitoring svc/prometheus-kube-prometheus-prometheus 9090
+    kubectl port-forward -n monitoring svc/prometheus-kube-prometheus-prometheus 9090
 ```
 
 Open `http://localhost:9090` → **Status → Targets**.
@@ -219,7 +216,7 @@ Open `http://localhost:9090` → **Status → Targets**.
 ### 3️⃣ Access Grafana
 
 ```bash
-kubectl port-forward -n monitoring svc/prometheus-grafana 3000:80
+    kubectl port-forward -n monitoring svc/prometheus-grafana 3000:80
 ```
 
 Login:

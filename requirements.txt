@@ -14,6 +14,7 @@ pydantic
 
 # Testing (Step 5)
 pytest
+pytest-cov
 
 # Linting
 flake8
