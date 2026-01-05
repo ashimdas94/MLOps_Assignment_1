@@ -24,3 +24,7 @@ requests
 
 #monitoring
 prometheus-fastapi-instrumentator
+
+#ui framework
+streamlit
+requests
