@@ -9,15 +9,21 @@ To design, develop, and deploy a scalable, reproducible, and monitored machine l
 of heart disease based on patient health data, served via a low-latency REST API.
 
 
-| Aspect | Tool/Technology | Assignment Task |
-| :--- | :--- | :--- |
-| **Data & Core ML** | Pandas, Scikit-learn, NumPy | 1, 2, 4 |
-| **Experiment Tracking** | MLflow | 3 |
-| **API Framework** | FastAPI, Uvicorn | 5, 6, 8 |
-| **CI/CD Automation** | GitHub Actions, Pytest | 5 |
-| **Containerization** | Docker | 6 |
-| **Orchestration/Deployment**| Kubernetes (K8s) | 7 |
-| **Configuration** | `src/config.py` | 4 (Reproducibility) |
+| Aspect                                 | Tool/Technology                              | Assignment Task |
+|:---------------------------------------|:---------------------------------------------|:----------------|
+| **Data & Core ML**                     | Pandas, Scikit-learn, NumPy                  | 1, 2, 4         |
+| **EDA**                                | Jupyter Notebook                             | 1               |
+| **Experiment Tracking**                | MLflow                                       | 3               |
+| **API Framework**                      | FastAPI, Uvicorn                             | 5, 6, 8         |
+| **Unit Testing**                       | Pytest                                       | 5               |
+| **CI/CD Automation**                   | GitHub Actions                               | 5               |
+| **Containerization**                   | Docker                                       | 6               |
+| **Orchestration/Deployment**           | Kubernetes (Minikube)                        | 7               |
+| **Monitoring & Metrics**               | Prometheus                                   | 8               |
+| **Visualization & Dashboards**         | Grafana                                      | 8               |
+| **UI Client**                          | Streamlit (local client)                     | 8               |
+| **Configuration**                      | `src/config.py`                              | 4               |
+| **Environment Management**             | `equirements.txt`                            | 4               |
 
 ## 🏗️ Architecture Overview
 
@@ -50,6 +56,9 @@ mlops-heart-disease/
 │   ├── schema.py               # Pydantic Input schema (13 features)
 │   └── Dockerfile              # Production-ready Docker image (multi-stage)
 │
+├── ui/
+│   └── app.py                  # Streamlit-based UI
+│
 ├── tests/
 │   ├── test_preprocess.py      # Tests data loading, missing values, shape
 │   ├── test_train.py           # Tests model performance > 0.85 ROC-AUC
@@ -76,6 +85,10 @@ mlops-heart-disease/
 2.  pip
 3.  Docker
 4.  kubectl
+5.  Minikube
+6.  Helm (only required for Prometheus/Grafana installation)
+
+Note : Helm is used only to install the Prometheus Operator (kube-prometheus-stack).
 
 ## Installation
 
@@ -110,7 +123,7 @@ mlops-heart-disease/
 
 ### 6️⃣ Run API locally:
 ```bash
-   uvicorn src.api.main:app --reload --port 8000
+   uvicorn api.main:app --reload --port 8000
 ```
 ### 7️⃣ Build Docker image:
 ```bash
@@ -125,15 +138,6 @@ mlops-heart-disease/
 ## 🚀 Deployment Using Kubernetes (Minikube)
 
 This project supports local Kubernetes deployment using **Minikube**, simulating a production-like environment with container orchestration, scaling, and monitoring.
-
-### Prerequisites (Additional)
-
-Ensure the following are installed:
-
-* **Minikube**
-* **Helm**
-* **Docker**
-* **kubectl**
 
 Verify installation:
 
@@ -188,6 +192,17 @@ API available at:
 ```
 http://localhost:8000
 ```
+
+### 5️⃣ Running the UI
+```bash
+    streamlit run ui/app.py
+```
+
+Open in browser:
+```
+http://localhost:8501
+```
+
 
 ---
 
@@ -248,15 +263,21 @@ histogram_quantile(
   )
 )
 ```
+**Error Rate (4xx + 5xx) for prediction:**
+```promql
+sum(rate(http_requests_total{handler="/predict", status=~"4xx|5xx"}[1m]))
+```
 
 ---
 
 ## ✅ Summary
 
-* Containerized ML inference service
-* Kubernetes-based deployment
-* CI/CD-driven training and testing
-* MLflow experiment tracking
-* Production-grade monitoring with Prometheus & Grafana
+* End-to-end MLOps pipeline for heart disease prediction
+* Reproducible training with MLflow experiment tracking
+* Containerized FastAPI inference service
+* Kubernetes deployment with rolling updates
+* CI/CD with linting, unit tests, coverage, and artifact uploads
+* Production-grade monitoring using Prometheus & Grafana
+* Interactive Streamlit UI for real-time inference and demonstration
 
 
